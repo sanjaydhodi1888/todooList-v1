@@ -1,26 +1,20 @@
 const express = require("express");
 const boydparser = require("body-parser");
 const ejs = require("ejs");
+const fulldate = require("./date");
 
 const app = express();
+const date = require(__dirname + "/date.js");
 
 app.set("view engine", "ejs");
 app.use(boydparser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 let itemList = ["buy food"];
-let worklist = [];
+let worklist = ["api testing", "database mirgration", "bug fixing"];
 
 app.get("/", (req, resp) => {
-  let dateOptions = {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  };
-  let date = new Date();
-  let fulldate = date.toLocaleDateString("eng-us", dateOptions);
-
-  resp.render("lists", { url: "/", data: itemList, date: fulldate });
+  resp.render("lists", { url: "/", data: itemList, date: date.fulldate() });
 });
 
 app.post("/", (req, resp) => {
@@ -31,14 +25,11 @@ app.post("/", (req, resp) => {
 });
 
 app.get("/worklist", (eq, resp) => {
-  let dateOptions = {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  };
-  let date = new Date();
-  let fulldate = date.toLocaleDateString("eng-us", dateOptions);
-  resp.render("lists", { url: "/worklist", data: worklist, date: fulldate });
+  resp.render("lists", {
+    url: "/worklist",
+    data: worklist,
+    date: date.fulldate(),
+  });
 });
 
 app.post("/worklist", (req, resp) => {

@@ -9,6 +9,7 @@ app.use(boydparser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 let itemList = ["buy food"];
+let worklist = [];
 
 app.get("/", (req, resp) => {
   let dateOptions = {
@@ -19,13 +20,33 @@ app.get("/", (req, resp) => {
   let date = new Date();
   let fulldate = date.toLocaleDateString("eng-us", dateOptions);
 
-  resp.render("lists", { data: itemList, date: fulldate });
+  resp.render("lists", { url: "/", data: itemList, date: fulldate });
 });
 
 app.post("/", (req, resp) => {
   let data = req.body.itemforadd.toString();
+
   itemList.push(data);
   resp.redirect("/");
+});
+
+app.get("/worklist", (eq, resp) => {
+  let dateOptions = {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  };
+  let date = new Date();
+  let fulldate = date.toLocaleDateString("eng-us", dateOptions);
+  resp.render("lists", { url: "/worklist", data: worklist, date: fulldate });
+});
+
+app.post("/worklist", (req, resp) => {
+  let worklistitem = req.body.itemforadd.toString();
+
+  worklist.push(worklistitem);
+
+  resp.redirect("/worklist");
 });
 
 app.listen(3000, (err) => {
